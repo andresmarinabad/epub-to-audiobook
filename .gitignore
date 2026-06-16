@@ -218,3 +218,7 @@ __marimo__/
 .streamlit/secrets.toml
 
 .direnv/
+
+# Audiobook output files (keep the directory, ignore its contents)
+output/*
+!output/.gitkeep

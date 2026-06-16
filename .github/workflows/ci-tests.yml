@@ -1,0 +1,41 @@
+name: Tests
+
+on:
+  push:
+    paths:
+      - "backend/**"
+      - ".github/workflows/ci-tests.yml"
+  pull_request:
+    paths:
+      - "backend/**"
+      - ".github/workflows/ci-tests.yml"
+
+jobs:
+  test:
+    name: pytest
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "backend/pyproject.toml"
+
+      - name: Install dependencies (including dev)
+        run: uv sync --dev
+
+      - name: Download NLTK data
+        run: uv run python -c "import nltk; nltk.download('punkt', quiet=True); nltk.download('punkt_tab', quiet=True)"
+
+      - name: Run tests
+        run: uv run pytest
+        env:
+          API_KEY: test-key
+          REDIS_URL: redis://localhost:6379/0
+          OUTPUT_DIR: /tmp/test-output

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>epub2audiobook</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1>epub<span class="accent">2</span>audiobook</h1>
+      <p class="subtitle">EPUB → M4B con Edge TTS y procesamiento paralelo</p>
+    </header>
+
+    <!-- ── Step 1: Upload ─────────────────────────────────── -->
+    <section id="step-upload" class="card active">
+      <h2>1. Sube tu EPUB</h2>
+
+      <div id="drop-zone" class="drop-zone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 16V4m0 0L8 8m4-4 4 4M4 20h16"/></svg>
+        <p>Arrastra un <strong>.epub</strong> aquí o haz clic</p>
+        <input id="epub-input" type="file" accept=".epub" hidden />
+      </div>
+
+      <!-- API Key -->
+      <div class="field">
+        <label for="api-key">API Key</label>
+        <input id="api-key" type="password" placeholder="X-API-Key" autocomplete="off" />
+      </div>
+    </section>
+
+    <!-- ── Step 2: Edit text ──────────────────────────────── -->
+    <section id="step-edit" class="card hidden">
+      <div class="step-header">
+        <h2>2. Revisa y edita el texto</h2>
+        <div class="book-meta">
+          <span id="meta-title"></span>
+          <span class="sep">·</span>
+          <span id="meta-author"></span>
+        </div>
+      </div>
+
+      <div class="editor-layout">
+        <textarea id="txt-editor" spellcheck="false"></textarea>
+
+        <!-- Panel de partes sin título -->
+        <div class="parts-panel">
+          <div class="parts-panel-header">
+            <span>Partes sin título</span>
+            <span id="parts-badge" class="parts-badge">0</span>
+          </div>
+          <p class="parts-hint">
+            Los <code># Part N</code> del texto aparecen aquí.<br>
+            Escribe el título y pulsa <strong>Aplicar</strong>.
+          </p>
+          <div id="parts-list" class="parts-list"></div>
+          <button id="btn-apply-parts" class="btn-secondary">Aplicar cambios</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <button id="btn-back-upload" class="btn-ghost">← Volver</button>
+        <button id="btn-go-config" class="btn-primary">Configurar →</button>
+      </div>
+    </section>
+
+    <!-- ── Step 3: Configure ─────────────────────────────── -->
+    <section id="step-config" class="card hidden">
+      <h2>3. Opciones de conversión</h2>
+
+      <div class="field">
+        <label for="locale-filter">Filtrar voces por idioma</label>
+        <select id="locale-filter">
+          <option value="">Todos los idiomas</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="voice-select">Voz</label>
+        <select id="voice-select">
+          <option value="">Cargando voces…</option>
+        </select>
+      </div>
+
+      <div class="row fields-row">
+        <div class="field">
+          <label for="pause-sentence">Pausa por frase (ms)</label>
+          <input id="pause-sentence" type="number" value="1200" min="0" max="10000" step="100" />
+        </div>
+        <div class="field">
+          <label for="pause-paragraph">Pausa por párrafo (ms)</label>
+          <input id="pause-paragraph" type="number" value="1500" min="0" max="10000" step="100" />
+        </div>
+        <div class="field">
+          <label for="pause-chapter">Pausa por capítulo (ms)</label>
+          <input id="pause-chapter" type="number" value="2000" min="0" max="10000" step="100" />
+        </div>
+      </div>
+
+      <div class="row">
+        <button id="btn-back-edit" class="btn-ghost">← Volver</button>
+        <button id="btn-start" class="btn-primary btn-start">Convertir a audiolibro</button>
+      </div>
+    </section>
+
+    <!-- ── Step 4: Progress ───────────────────────────────── -->
+    <section id="step-progress" class="card hidden">
+      <h2>4. Convirtiendo…</h2>
+
+      <div class="overall-progress">
+        <div class="overall-label">
+          <span>Progreso general</span>
+          <span id="overall-pct">0%</span>
+        </div>
+        <div class="bar-track">
+          <div id="overall-bar" class="bar-fill"></div>
+        </div>
+        <p id="status-text" class="status-text">Iniciando trabajos…</p>
+      </div>
+
+      <div id="chapters-grid" class="chapters-grid"></div>
+
+      <div id="download-section" class="download-section hidden">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 4v12m0 0-4-4m4 4 4-4M4 20h16"/></svg>
+        <div>
+          <p class="download-title">¡Audiolibro listo!</p>
+          <a id="download-link" href="#" class="btn-primary">Descargar M4B</a>
+        </div>
+      </div>
+
+      <div id="new-conversion-row" class="row hidden">
+        <button id="btn-new-conversion" class="btn-ghost">← Nueva conversión</button>
+      </div>
+    </section>
+
+    <div id="toast" class="toast hidden"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+name: Build and Push Images
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+jobs:
+  build-backend:
+    name: Backend image
+    if: github.event.pull_request.merged == true
+    uses: CodeForgeGuild/ci-actions/.github/workflows/build-push-ghcr.yml@main
+    with:
+      image_name: ${{ github.repository }}/backend
+      dockerfile: backend/Dockerfile
+      context: backend
+      platforms: linux/amd64
+      push_latest: true
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-frontend:
+    name: Frontend image
+    if: github.event.pull_request.merged == true
+    uses: CodeForgeGuild/ci-actions/.github/workflows/build-push-ghcr.yml@main
+    with:
+      image_name: ${{ github.repository }}/frontend
+      dockerfile: frontend/Dockerfile
+      context: frontend
+      platforms: linux/amd64
+      push_latest: true
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

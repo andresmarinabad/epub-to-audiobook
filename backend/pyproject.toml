@@ -38,7 +38,7 @@ packages = ["src/audiobook"]
 [tool.uv]
 dev-dependencies = [
     "pytest>=8.0",
-    "httpx2>=0.28",
+    "httpx>=0.27",
     "pytest-asyncio>=0.24",
 ]
 

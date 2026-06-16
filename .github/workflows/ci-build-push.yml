@@ -5,6 +5,10 @@ on:
     types: [closed]
     branches: [main]
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build-backend:
     name: Backend image
